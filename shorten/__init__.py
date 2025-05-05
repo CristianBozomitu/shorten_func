@@ -1,9 +1,6 @@
 import os, uuid, json
 import azure.functions as func
-from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
 
 def get_db_connection():
     import pyodbc

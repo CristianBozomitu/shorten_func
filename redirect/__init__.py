@@ -1,8 +1,6 @@
 import os, pyodbc
 import azure.functions as func
-from dotenv import load_dotenv
 
-load_dotenv()
 # — ODBC setup (share cu shorten)
 host     = os.getenv("SQL_HOST")
 db       = os.getenv("SQL_DB")
