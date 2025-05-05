@@ -12,7 +12,7 @@ on:
 
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
-  PYTHON_VERSION: '3.12' # set this to the python version to use (supports 3.6, 3.7, 3.8)
+  PYTHON_VERSION: '3.10' # set this to the python version to use (supports 3.6, 3.7, 3.8)
 
 jobs:
   build:
@@ -69,9 +69,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_71F659C55A754C65A1AA841055F0532F }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_DFA1F865DEA444429EAEE724E4003830 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7D4B96FBD75C4C8ABE90A8B62E6A80DD }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_AE251D9492A04F14B01BF50C39DE8708 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0E9F810F860546EF83DE9E6D3FDFA3FA }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_52139EAB6E044789AF4F9935F95FBDCF }}
 
       - name: 'Deploy to Azure Functions'
         uses: Azure/functions-action@v1
