@@ -1,0 +1,18 @@
+{
+    "bindings": [
+      {
+        "name": "req",
+        "type": "httpTrigger",
+        "direction": "in",
+        "authLevel": "anonymous",
+        "methods": [ "post" ],
+        "route": "shorten"
+      },
+      {
+        "name": "$return",
+        "type": "http",
+        "direction": "out"
+      }
+    ]
+  }
+  

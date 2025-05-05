@@ -1,0 +1,12 @@
+{
+  "IsEncrypted": true,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "CfDJ8CzxgXPZuIxEqiaPAVOCbP85TAOEg7eo4djxsy9m1qt5Zv9TZo6yBFEAvdPSdnfgNEgCyW2e7XaMao1QFFEyiG8EISR/uvgZ+I+VQvg9Eg45f8neYLd48ULn2N0GMDD7fw=="
+  },
+  "ConnectionStrings": {},
+  "Host": {
+    "LocalHttpPort": 7071,
+    "CORS": "http://localhost:4200",
+    "CORSCredentials": false
+  }
+}
