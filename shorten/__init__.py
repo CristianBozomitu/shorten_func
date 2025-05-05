@@ -3,29 +3,29 @@ import azure.functions as func
 
 
 def get_db_connection():
-    import pyodbc
+    import pymssql
     host = os.getenv("SQL_HOST")
     db = os.getenv("SQL_DB")
     user = os.getenv("SQL_USER")
     pwd = os.getenv("SQL_PASSWORD")
-    port = os.getenv("SQL_PORT", "1433")
+    port = int(os.getenv("SQL_PORT", "1433"))
 
     try:
-        conn_str = (
-            f"DRIVER={{ODBC Driver 17 for SQL Server}};"
-            f"SERVER={host},{port};"
-            f"DATABASE={db};"
-            f"UID={user};"
-            f"PWD={pwd};"
-            f"Connection Timeout=30;"
+        # pymssql uses different connection parameters
+        conn = pymssql.connect(
+            server=host,
+            port=port,
+            user=user,
+            password=pwd,
+            database=db,
+            autocommit=True
         )
-        return pyodbc.connect(conn_str, autocommit=True)
+        return conn
     except Exception as e:
         print(f"Database connection error: {str(e)}")
         raise
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-    # Add CORS headers
     headers = {
         "Access-Control-Allow-Origin": "http://localhost:4200",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
@@ -33,12 +33,10 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         "Access-Control-Max-Age": "86400"
     }
 
-    # Handle OPTIONS requests (preflight)
     if req.method == "OPTIONS":
         return func.HttpResponse(status_code=200, headers=headers)
 
     try:
-        # Only attempt to get_json if method is POST
         if req.method == "POST":
             req_body = req.get_json()
             orig = req_body.get("url")
@@ -51,25 +49,21 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                     headers=headers
                 )
 
-            # Generate unique code
             code = uuid.uuid4().hex[:6]
 
             try:
-                # Get database connection inside the function
                 cnxn = get_db_connection()
                 cursor = cnxn.cursor()
 
-                # Save to database
+                # pymssql uses %s placeholders instead of ?
                 cursor.execute(
-                    "INSERT INTO UrlMap (code, originalUrl) VALUES (?, ?);",
-                    code, orig
+                    "INSERT INTO UrlMap (code, originalUrl) VALUES (%s, %s);",
+                    (code, orig)  # Parameters must be in a tuple
                 )
 
-                # Build short link
                 base = req.url.rstrip("/shorten")
                 short = f"{base}/{code}"
 
-                # Close database resources
                 cursor.close()
                 cnxn.close()
 

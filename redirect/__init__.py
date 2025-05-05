@@ -1,37 +1,56 @@
 import os
 import azure.functions as func
+import pymssql
 
 def get_db_connection():
-    import pyodbc
     host = os.getenv("SQL_HOST")
     db = os.getenv("SQL_DB")
     user = os.getenv("SQL_USER")
     pwd = os.getenv("SQL_PASSWORD")
-    port = os.getenv("SQL_PORT", "1433")
+    port = int(os.getenv("SQL_PORT", "1433"))
 
-    conn_str = (
-        f"DRIVER={{ODBC Driver 17 for SQL Server}};"
-        f"SERVER={host},{port};DATABASE={db};UID={user};PWD={pwd}"
-    )
-    return pyodbc.connect(conn_str, autocommit=True)
+    try:
+        conn = pymssql.connect(
+            server=host,
+            user=user,
+            port= port,
+            password=pwd,
+            database=db
+        )
+        return conn
+    except Exception as e:
+        print(f"Database connection error: {str(e)}")
+        raise
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
+    # Add CORS headers
+    headers = {
+        "Access-Control-Allow-Origin": "http://localhost:4200",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+
+    # Handle OPTIONS requests (preflight)
+    if req.method == "OPTIONS":
+        return func.HttpResponse(status_code=200, headers=headers)
+
     try:
         code = req.route_params.get("code")
         if not code:
             return func.HttpResponse("Missing code", status_code=400)
 
-        # Get database connection inside the function
+        # Get database connection
         cnxn = get_db_connection()
         cursor = cnxn.cursor()
 
+        # Execute query (notice the different parameter style)
         cursor.execute(
-            "SELECT originalUrl FROM UrlMap WHERE code = ?;",
-            code
+            "SELECT originalUrl FROM UrlMap WHERE code = %s",
+            (code,)  # Parameters must be in a tuple
         )
         row = cursor.fetchone()
 
-        # Close the resources
+        # Close connections
         cursor.close()
         cnxn.close()
 
