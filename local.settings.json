@@ -1,7 +1,12 @@
 {
-  "IsEncrypted": true,
+  "IsEncrypted": false,
   "Values": {
-    "FUNCTIONS_WORKER_RUNTIME": "CfDJ8CzxgXPZuIxEqiaPAVOCbP85TAOEg7eo4djxsy9m1qt5Zv9TZo6yBFEAvdPSdnfgNEgCyW2e7XaMao1QFFEyiG8EISR/uvgZ+I+VQvg9Eg45f8neYLd48ULn2N0GMDD7fw=="
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "SQL_HOST": "cloud-computing2025.database.windows.net",
+    "SQL_DB": "clid-computing-azure",
+    "SQL_USER": "Cloud",
+    "SQL_PASSWORD": "Admin2025",
+    "SQL_PORT": "1433"
   },
   "ConnectionStrings": {},
   "Host": {
