@@ -23,14 +23,12 @@ def get_db_connection():
         raise
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-    # Add CORS headers
     headers = {
         "Access-Control-Allow-Origin": "http://localhost:4200",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization"
     }
 
-    # Handle OPTIONS requests (preflight)
     if req.method == "OPTIONS":
         return func.HttpResponse(status_code=200, headers=headers)
 
@@ -39,18 +37,15 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         if not code:
             return func.HttpResponse("Missing code", status_code=400)
 
-        # Get database connection
         cnxn = get_db_connection()
         cursor = cnxn.cursor()
 
-        # Execute query (notice the different parameter style)
         cursor.execute(
             "SELECT originalUrl FROM UrlMap WHERE code = %s",
-            (code,)  # Parameters must be in a tuple
+            (code,)
         )
         row = cursor.fetchone()
 
-        # Close connections
         cursor.close()
         cnxn.close()
 
